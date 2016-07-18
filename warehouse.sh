@@ -1,6 +1,6 @@
 #!/bin/bash
 echo $(tput setaf 4)"Starting Deployment of warehouse on container"$(tput sgr0)
-echo $(tput setaf 4)"Log are dumped on /var/log/deploy.log"$(tput sgr0)
+echo $(tput setaf 4)"Logs are dumped on /var/log/deploy.log"$(tput sgr0)
 
 
 touch /var/log/deploy.log
