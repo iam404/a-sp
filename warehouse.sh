@@ -1,5 +1,5 @@
 #!/bin/bash
-echo $(tput setaf 4)"Starting Deployment of warehouse on container"$(tput sgr0)
+echo $(tput setaf 4)"Starting Deployment of warehouse on Docker container"$(tput sgr0)
 echo $(tput setaf 4)"Logs are dumped on /var/log/deploy.log"$(tput sgr0)
 
 
@@ -51,9 +51,10 @@ wget -c https://raw.githubusercontent.com/iam404/a-sp/master/run.sh &>> /var/log
 echo $(tput setaf 4)"Please wait while docker image is building. It may take few minute to complete."$(tput sgr0)
 sudo docker build -t warehouse/docker . &>> /var/log/deploy.log || echo "Image building failed. Check log /var/log/deploy.log "
 
-echo $(tput setaf 4)"Creating Container"$(tput sgr0)
+echo $(tput setaf 4)"Creating Docker Container from build"$(tput sgr0)
 CID=$(sudo docker run -d --name warehouse warehouse/docker)
+sleep 5
 CIP=$(sudo docker inspect --format '{{ .NetworkSettings.IPAddress }}' $CID )
 
 echo $(tput setaf 4)"Application deployed."$(tput sgr0)
-echo $(tput setaf 4)"Check on your browser $CIP:3000"$(tput sgr0)
+echo $(tput setaf 4)"Check on your browser http://$CIP:3000"$(tput sgr0)
