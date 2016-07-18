@@ -1,3 +1,3 @@
 #!/bin/sh
 
-service mongodb start && sleep 30 && node .
+service mongodb start && sleep 5 && node .
