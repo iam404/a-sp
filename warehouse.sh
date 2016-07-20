@@ -23,6 +23,9 @@ if [[ $? -ne 0 ]]; then
 		sudo apt-get install -y apt-transport-https ca-certificates &>> /var/log/deploy.log
 		echo $(tput setaf 4)"Please wait while Installing docker engine"$(tput sgr0)
 		sudo apt-get install -y docker-engine &>> /var/log/deploy.log
+		echo $(tput setaf 4)"Please wait while Installing docker composer"$(tput sgr0)
+		curl -L https://github.com/docker/compose/releases/download/1.6.2/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose &>> /var/log/deploy.log
+		chmod +x /usr/local/bin/docker-compose
 		echo $(tput setaf 4)"Restarting Docker services"$(tput sgr0)
 		sudo service docker restart &>> /dev/null
 	else
@@ -45,16 +48,18 @@ cd /tmp; git clone https://github.com/ShoppinPal/warehouse.git warehouse  &>> /v
 
 cd /tmp/warehouse
 
+echo $(tput setaf 4)"Fetching Dockerfile and Docker compose file"$(tput sgr0)
+
 wget -c https://raw.githubusercontent.com/iam404/a-sp/master/Dockerfile &>> /var/log/deploy.log
-wget -c https://raw.githubusercontent.com/iam404/a-sp/master/run.sh &>> /var/log/deploy.log
+wget -c https://raw.githubusercontent.com/iam404/a-sp/master/docker-compose.yml &>> /var/log/deploy.log
 
 echo $(tput setaf 4)"Please wait while docker image is building. It may take few minute to complete."$(tput sgr0)
-sudo docker build -t warehouse/docker . &>> /var/log/deploy.log || echo "Image building failed. Check log /var/log/deploy.log "
+sudo docker-compose up -d &>> /var/log/deploy.log || echo "Image building failed. Check log /var/log/deploy.log "
 
-echo $(tput setaf 4)"Creating Docker Container from build"$(tput sgr0)
-CID=$(sudo docker run -d --name warehouse warehouse/docker)
-sleep 5
-CIP=$(sudo docker inspect --format '{{ .NetworkSettings.IPAddress }}' $CID )
+#echo $(tput setaf 4)"Creating Docker Container from build"$(tput sgr0)
+#CID=$(sudo docker run -d --name warehouse warehouse/docker)
+#sleep 5
+#CIP=$(sudo docker inspect --format '{{ .NetworkSettings.IPAddress }}' $CID )
 
 echo $(tput setaf 4)"Application deployed."$(tput sgr0)
-echo $(tput setaf 4)"Check on your browser http://$CIP:3000"$(tput sgr0)
+echo $(tput setaf 4)"Check on your browser http://0.0.0.0:3000"$(tput sgr0)
